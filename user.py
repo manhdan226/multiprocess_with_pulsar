@@ -17,6 +17,7 @@ consumer = client.subscribe('Popo.list_of_book', 'my-subscription')
 books = {}
 
 def list_of_books(mission, data):
+    print("Data: ", data)
     global books
     if mission == 1:
         books = data

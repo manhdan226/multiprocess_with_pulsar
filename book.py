@@ -32,8 +32,9 @@ while True:
             category = dict_data["category"]
             books = list_of_books(category)
             new_data = {"books": books}
+            print(new_data)
             encode_new_data = json.dumps(new_data, indent=2).encode('utf-8')
-		
+    
             client = pulsar.Client('pulsar://localhost:6650')
             producer = client.create_producer('Popo.list_of_book')
             producer.send(encode_new_data)
