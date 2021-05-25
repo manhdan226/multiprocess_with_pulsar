@@ -13,7 +13,6 @@ dynamodb = boto3.resource('dynamodb', endpoint_url = "http://localhost:4566")
 table = dynamodb.Table('Popo.user')
 client = pulsar.Client('pulsar://localhost:6650')
 consumer = client.subscribe('Popo.list_of_book', 'my-subscription')
-producer = client.create_producer('Popo.category_book')
 
 start_time = time.time()
 books = {}
@@ -50,7 +49,7 @@ def receive_message():
         except:
             consumer.negative_acknowledge(msg)
     print("Close")
-    client_receive.close()
+    client.close()
 
 class User(Resource):
     global books
