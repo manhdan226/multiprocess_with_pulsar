@@ -11,11 +11,6 @@ api = Api(app)
 dynamodb = boto3.resource('dynamodb', endpoint_url = "http://localhost:4566")
 table = dynamodb.Table('Popo.user')
 
-client = pulsar.Client('pulsar://localhost:6650')
-client.close()
-client = pulsar.Client('pulsar://localhost:6650')
-consumer = client.subscribe('Popo.list_of_book', 'my-subscription')
-producer = client.create_producer('Popo.category_book')
 
 books = {}
 
@@ -29,6 +24,8 @@ def list_of_books(mission, data):
     print(books)
 
 def receive_message():
+    client = pulsar.Client('pulsar://localhost:6650')
+    consumer = client.subscribe('Popo.list_of_book', 'my-subscription')
     print("Run consumer!")
     while True:
         msg = consumer.receive()
@@ -58,17 +55,17 @@ class User(Resource):
         print("Received request!")
 
         #Send request to Book server
-        #client = pulsar.Client('pulsar://localhost:6650')
-        
+        client = pulsar.Client('pulsar://localhost:6650')
+        producer = client.create_producer('Popo.category_book')
         producer.send(encode_new_data)
-        #client.close()
+        client.close()
         print("Sent message!")
 
         #Check if User server receive list of book
-        rs = books["books"]
+        rs = books
         print("Result: ", rs)
         while True:
-            if len(rs) > 0:
+            if len(rs["books"]) > 0:
                 break
         print("Received list")
 
