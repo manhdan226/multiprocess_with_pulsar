@@ -41,15 +41,15 @@ def delete_table(table):
 if __name__ == "__main__":
     #table = dynamodb.Table('tracking_data')
     create_table("Popo.user", "id")
-    user = {"id": 1, "username": "Dan", "password": "DanD"}
+    user = {"id": "1", "username": "Dan", "password": "DanD"}
     table1 = dynamodb.Table('Popo_user')
     table1.put_item(Item=user)
 
     create_table("Popo.books", "id")
-    books = [[1,"Cha giàu, cha nghèo","Kinh tế"],
-            [2,"Từ tốt đến vĩ đại","Kinh tế"],
-            [3,"Chí Phèo","Văn học"],
-            [4,"Bình Ngô đại cáo","Lịch sử"]]
+    books = [["1","Cha giàu, cha nghèo","Kinh tế"],
+            ["2","Từ tốt đến vĩ đại","Kinh tế"],
+            ["3","Chí Phèo","Văn học"],
+            ["4","Bình Ngô đại cáo","Lịch sử"]]
 
     table2 = dynamodb.Table('Popo_books')
     for book in books:
