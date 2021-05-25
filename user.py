@@ -11,6 +11,8 @@ api = Api(app)
 
 dynamodb = boto3.resource('dynamodb', endpoint_url = "http://localhost:4566")
 table = dynamodb.Table('Popo.user')
+client_receive = pulsar.Client('pulsar://localhost:6650')
+consumer = client_receive.subscribe('Popo.list_of_book', 'my-subscription')
 
 start_time = time.time()
 books = {}
@@ -25,13 +27,12 @@ def list_of_books(mission, data):
     print(books)
 
 def receive_message():
-    client_receive = pulsar.Client('pulsar://localhost:6650')
-    consumer = client_receive.subscribe('Popo.list_of_book', 'my-subscription')
+    
     print("Run consumer!")
 
     while True:
-        if time.time( - start_time) % 10 == 0:
-            print("Consumer runing")
+        #if time.time() - start_time % 10 == 0:
+        print("Consumer runing")
         msg = consumer.receive()
         print("Received list of books")
         try:
