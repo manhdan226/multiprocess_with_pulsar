@@ -22,8 +22,10 @@ def list_of_books(mission, data):
         books = data
     else:
         books = []
+    print(books)
 
 def receive_message():
+    print("Run consumer!")
     while True:
         msg = consumer.receive()
         print("Received list of books")
