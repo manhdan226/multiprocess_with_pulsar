@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_restful import Resource, Api
 import boto3
 import pulsar
@@ -14,14 +14,14 @@ table = dynamodb.Table('Popo.user')
 client = pulsar.Client('pulsar://localhost:6650')
 consumer = client.subscribe('Popo.list_of_book', 'my-subscription')
 
-books = []
+books = {}
 
 def list_of_books(mission, data):
     global books
     if mission == 1:
         books = data
     else:
-        books = []
+        books = {}
     print(books)
 
 def receive_message():
@@ -68,7 +68,7 @@ class User(Resource):
 
         #Clear list_of_book and return result
         list_of_books(0, [])
-        return rs
+        return jsonify(rs)
 
 def run_web():
     app.run(port = 2901)
