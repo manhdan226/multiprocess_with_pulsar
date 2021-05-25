@@ -24,8 +24,8 @@ def list_of_books(mission, data):
     print(books)
 
 def receive_message():
-    client = pulsar.Client('pulsar://localhost:6650')
-    consumer = client.subscribe('Popo.list_of_book', 'my-subscription')
+    client_receive = pulsar.Client('pulsar://localhost:6650')
+    consumer = client_receive.subscribe('Popo.list_of_book', 'my-subscription')
     print("Run consumer!")
     while True:
         msg = consumer.receive()
@@ -43,7 +43,7 @@ def receive_message():
                 print("Can't convert")
         except:
             consumer.negative_acknowledge(msg)
-    
+    client_receive.close()
 
 class User(Resource):
     global books
@@ -55,10 +55,10 @@ class User(Resource):
         print("Received request!")
 
         #Send request to Book server
-        client = pulsar.Client('pulsar://localhost:6650')
-        producer = client.create_producer('Popo.category_book')
+        client_send = pulsar.Client('pulsar://localhost:6650')
+        producer = client_send.create_producer('Popo.category_book')
         producer.send(encode_new_data)
-        client.close()
+        client_send.close()
         print("Sent message!")
 
         #Check if User server receive list of book
