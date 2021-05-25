@@ -43,7 +43,6 @@ def receive_message():
         except:
             consumer.negative_acknowledge(msg)
 
-
 class User(Resource):
     global books
     def post(self):
@@ -61,15 +60,15 @@ class User(Resource):
         print("Sent message!")
 
         #Check if User server receive list of book
+        rs = books["books"]
         while True:
-            if len(books) > 0:
+            if len(rs) > 0:
                 break
         print("Received list")
 
         #Clear list_of_book and return result
-        rs = books
         list_of_books(0, [])
-        return rs["books"]
+        return rs
 
 def run_web():
     app.run(port = 2901)
