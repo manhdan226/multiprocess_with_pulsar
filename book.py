@@ -38,7 +38,7 @@ while True:
             producer = client.create_producer('Popo.list_of_book')
             producer.send(encode_new_data)
             client.close()
-
+            print("Sent")
         except:
             print("Can't convert!")
     except:

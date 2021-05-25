@@ -43,6 +43,7 @@ def receive_message():
 
 
 class User(Resource):
+    global books
     def post(self):
         #Receive and convert data
         request_data = request.get_json()
