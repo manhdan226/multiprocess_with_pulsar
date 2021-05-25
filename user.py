@@ -12,7 +12,10 @@ dynamodb = boto3.resource('dynamodb', endpoint_url = "http://localhost:4566")
 table = dynamodb.Table('Popo.user')
 
 client = pulsar.Client('pulsar://localhost:6650')
+client.close()
+client = pulsar.Client('pulsar://localhost:6650')
 consumer = client.subscribe('Popo.list_of_book', 'my-subscription')
+producer = client.create_producer('Popo.category_book')
 
 books = {}
 
@@ -43,6 +46,7 @@ def receive_message():
                 print("Can't convert")
         except:
             consumer.negative_acknowledge(msg)
+    
 
 class User(Resource):
     global books
@@ -54,10 +58,10 @@ class User(Resource):
         print("Received request!")
 
         #Send request to Book server
-        client = pulsar.Client('pulsar://localhost:6650')
-        producer = client.create_producer('Popo.category_book')
+        #client = pulsar.Client('pulsar://localhost:6650')
+        
         producer.send(encode_new_data)
-        client.close()
+        #client.close()
         print("Sent message!")
 
         #Check if User server receive list of book

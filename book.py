@@ -6,7 +6,10 @@ dynamodb = boto3.resource('dynamodb', endpoint_url = "http://localhost:4566")
 table = dynamodb.Table('Popo.books')
 
 client = pulsar.Client('pulsar://localhost:6650')
+client.close()
+client = pulsar.Client('pulsar://localhost:6650')
 consumer = client.subscribe('Popo.category_book', 'my-subscription')
+producer = client.create_producer('Popo.list_of_book')
 
 def list_of_books(category):
     books = []
@@ -36,9 +39,8 @@ while True:
             encode_new_data = json.dumps(new_data, indent=2).encode('utf-8')
     
             client = pulsar.Client('pulsar://localhost:6650')
-            producer = client.create_producer('Popo.list_of_book')
+            
             producer.send(encode_new_data)
-            client.close()
             print("Sent")
         except:
             print("Can't convert!")
