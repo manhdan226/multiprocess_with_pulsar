@@ -75,8 +75,14 @@ api.add_resource(User, '/user')
 
 if __name__ == '__main__':
     with Manager() as manager:
-        p1 = Process(target=run_web, args=())
-        p2 = Process(target=receive_message, args=())
-    
+        p_web = Process(target=run_web, args=())
+        p_pulsar = Process(target=receive_message, args=())
+
+        p_web.start()
+        p_pulsar.start()
+
+        p_web.join()
+        p_pulsar.join()
+
 
 
