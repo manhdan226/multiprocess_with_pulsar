@@ -64,7 +64,9 @@ class User(Resource):
                 encode_new_data = json.dumps(new_data, indent=2).encode('utf-8')
             #Send request to Book server
                 print(encode_new_data)
+                producer = client.create_producer('Popo.category_book')
                 producer.send(encode_new_data)
+                client.close()
                 print("Sent message!")
 
             except:

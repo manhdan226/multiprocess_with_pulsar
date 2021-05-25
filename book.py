@@ -7,7 +7,6 @@ table = dynamodb.Table('Popo.books')
 
 client = pulsar.Client('pulsar://localhost:6650')
 consumer = client.subscribe('Popo.category_book', 'my-subscription')
-producer = client.create_producer('Popo.list_of_book')
 
 def list_of_books(category):
     books = []
@@ -40,10 +39,12 @@ while True:
             new_data = {"books": books}
             print(new_data)
             encode_new_data = json.dumps(new_data, indent=2).encode('utf-8')
-
+            producer = client.create_producer('Popo.list_of_book')
             producer.send(encode_new_data)
+            client.close()
             print("Sent")
         except:
             print("Can't send!")
     except:
         consumer.negative_acknowledge(msg)
+client.close()
