@@ -84,16 +84,14 @@ def run_web():
 api.add_resource(User, '/user')
 
 if __name__ == '__main__':
-    with Manager() as manager:
-        p_web = Process(target=run_web, args=())
-        p_pulsar = Process(target=receive_message, args=())
+    #with Manager() as manager:
+    p_web = Process(target=run_web, args=())
+    p_pulsar = Process(target=receive_message, args=())
 
-        p_web.start()
-        p_web.join()
-
-        while True:
-            p_pulsar.start()
-            p_pulsar.join()
+    p_web.start()
+    p_pulsar.start()
+    p_web.join()
+    p_pulsar.join()
 
 
 
