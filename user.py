@@ -12,7 +12,7 @@ dynamodb = boto3.resource('dynamodb', endpoint_url = "http://localhost:4566")
 table = dynamodb.Table('Popo.user')
 
 client = pulsar.Client('pulsar://localhost:6650')
-consumer = client.subscribe('HT.list_of_book', 'my-subscription')
+consumer = client.subscribe('Popo.list_of_book', 'my-subscription')
 
 books = []
 
@@ -52,7 +52,7 @@ class User(Resource):
 
         #Send request to Book server
         client = pulsar.Client('pulsar://localhost:6650')
-        producer = client.create_producer('HT.category_book')
+        producer = client.create_producer('Popo.category_book')
         producer.send(encode_new_data)
         client.close()
         print("Sent message!")
