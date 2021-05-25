@@ -62,6 +62,7 @@ class User(Resource):
 
         #Check if User server receive list of book
         rs = books["books"]
+        print("Result: ", rs)
         while True:
             if len(rs) > 0:
                 break
