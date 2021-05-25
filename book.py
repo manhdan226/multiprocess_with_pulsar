@@ -18,7 +18,7 @@ def list_of_books(category):
 
 while True:
     client_receive = pulsar.Client('pulsar://localhost:6650')
-    consumer = client.subscribe('Popo.category_book', 'my-subscription')
+    consumer = client_receive.subscribe('Popo.category_book', 'my-subscription')
     msg = consumer.receive()
     print("Received category books")
     try:        
@@ -37,7 +37,7 @@ while True:
             encode_new_data = json.dumps(new_data, indent=2).encode('utf-8')
 
             client_send = pulsar.Client('pulsar://localhost:6650')
-            producer = client.create_producer('Popo.list_of_book')
+            producer = client_send.create_producer('Popo.list_of_book')
             producer.send(encode_new_data)
             client_send.close()
             print("Sent")
