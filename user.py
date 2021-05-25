@@ -56,27 +56,35 @@ class User(Resource):
     global books
     def post(self):
         #Receive and convert data
-        request_data = request.get_json()
-        new_data = {"category" : request_data["category"]}
-        encode_new_data = json.dumps(new_data, indent=2).encode('utf-8')
-        print("Received request!")
+        try:
+            request_data = request.get_json()
+            print("Received request!")
+            try:
+                new_data = {"category" : request_data["category"]}
+                encode_new_data = json.dumps(new_data, indent=2).encode('utf-8')
+            #Send request to Book server
+                print(encode_new_data)
+                producer.send(encode_new_data)
+                print("Sent message!")
 
-        #Send request to Book server
-       
-        producer.send(encode_new_data)
-        print("Sent message!")
+            except:
+                print("Can't send")
 
-        #Check if User server receive list of book
-        rs = books
-        print("Result: ", rs)
-        while True:
-            if len(rs["books"]) > 0:
-                break
-        print("Received list")
-
-        #Clear list_of_book and return result
-        list_of_books(0, [])
-        return jsonify(rs)
+            #Check if User server receive list of book
+            try:
+                rs = books
+                print("Result: ", rs)
+                while True:
+                    if len(rs["books"]) > 0:
+                        break
+                print("Received list")
+                list_of_books(0, [])
+            except:
+                print("Can't receive")
+            #Clear list_of_book and return result
+            
+        except:
+            return "Can't process"
 
 def run_web():
     app.run(port = 2901)

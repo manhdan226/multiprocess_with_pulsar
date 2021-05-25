@@ -30,8 +30,12 @@ while True:
             dict_data = json.loads(json.dumps(json_data))
             print("Convert json to dictionary")
             print("Done!")
-
+        except:
+            print("Can't convert!")
+        
+        try:
             category = dict_data["category"]
+            print(category)
             books = list_of_books(category)
             new_data = {"books": books}
             print(new_data)
@@ -40,6 +44,6 @@ while True:
             producer.send(encode_new_data)
             print("Sent")
         except:
-            print("Can't convert!")
+            print("Can't send!")
     except:
         consumer.negative_acknowledge(msg)
