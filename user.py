@@ -62,6 +62,7 @@ def receive_message():
             except:
                 consumer.negative_acknowledge(msg)
         except Exception as e:
+            print("Can't receive")
             print(e)
     client.close()
 
@@ -99,7 +100,7 @@ class User(Resource):
             return "Can't process"
 
 def run_web():
-    app.run(debug = True, port = 2901, use_reloader=False)
+    app.run(debug = True, port = 2901)
 
 api.add_resource(User, '/user')
 
@@ -109,7 +110,6 @@ if __name__ == '__main__':
     p_pulsar = Process(target=receive_message, args=())
 
     p_pulsar.start()
-    
     p_pulsar.join()
     p_web.start()
     p_web.join()
