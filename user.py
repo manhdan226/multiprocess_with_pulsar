@@ -9,8 +9,8 @@ import time
 app = Flask(__name__)
 api = Api(app)
 
-dynamodb = boto3.resource('dynamodb', endpoint_url = "http://localhost:4566")
-table = dynamodb.Table('Popo.user')
+# dynamodb = boto3.resource('dynamodb', endpoint_url = "http://localhost:4566")
+# table = dynamodb.Table('Popo.user')
 client = pulsar.Client('pulsar://localhost:6650')
 consumer = client.subscribe('Popo.list_of_book', 'my-subscription')
 
@@ -22,7 +22,7 @@ def list_of_books(mission, data):
     print("Data: ", data)
     global books
     if mission == 1:
-        books = data
+        books["books"].append = data
     else:
         books = {}
     print("List of books:", books)
@@ -49,17 +49,20 @@ def receive_message():
     while True:
         #if time.time() - start_time % 10 == 0:
         print("Consumer is runing")
-        msg = consumer.receive()
-        print("-----3. Received list of books")
-        try:
-            consumer.acknowledge(msg)
+        try: 
+            msg = consumer.receive()
+            print("-----3. Received list of books")
             try:
-                dict_data = convert_msg(msg)
-                list_of_books(1, dict_data)
+                consumer.acknowledge(msg)
+                try:
+                    dict_data = convert_msg(msg)
+                    list_of_books(1, dict_data)
+                except:
+                    print("Can't convert")
             except:
-                print("Can't convert")
-        except:
-            consumer.negative_acknowledge(msg)
+                consumer.negative_acknowledge(msg)
+        except Exception as e:
+            print(e)
     client.close()
 
 class User(Resource):
@@ -85,7 +88,7 @@ class User(Resource):
                     if len(rs["books"]) > 0:
                         break
                 print("Received list")
-                list_of_books(0, [])
+                list_of_books(0, {})
                 return "Sucessful"
             except:
                 print("Can't receive")
