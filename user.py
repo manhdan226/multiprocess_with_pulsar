@@ -47,22 +47,22 @@ def send_message(encode_new_data):
 def receive_message():    
     print("---------------Run consumer!")
     while True:
-        if time.time() - start_time % 10 == 0:
+        if (time.time() - start_time) % 2 == 0:
             print("Consumer is runing")
-        # try: 
-        #     msg = consumer.receive()
-        #     print("-----3. Received list of books")
-        #     try:
-        #         consumer.acknowledge(msg)
-        #         try:
-        #             dict_data = convert_msg(msg)
-        #             list_of_books(1, dict_data)
-        #         except:
-        #             print("Can't convert")
-        #     except:
-        #         consumer.negative_acknowledge(msg)
-        # except Exception as e:
-        #     print(e)
+        try: 
+            msg = consumer.receive()
+            print("-----3. Received list of books")
+            try:
+                consumer.acknowledge(msg)
+                try:
+                    dict_data = convert_msg(msg)
+                    list_of_books(1, dict_data)
+                except:
+                    print("Can't convert")
+            except:
+                consumer.negative_acknowledge(msg)
+        except Exception as e:
+            print(e)
     client.close()
 
 class User(Resource):
@@ -99,7 +99,7 @@ class User(Resource):
             return "Can't process"
 
 def run_web():
-    app.run(port = 2901)
+    app.run(debug = True, port = 2901, use_reloader=False)
 
 api.add_resource(User, '/user')
 
@@ -109,8 +109,9 @@ if __name__ == '__main__':
     p_pulsar = Process(target=receive_message, args=())
 
     p_pulsar.start()
-    p_web.start()
+    
     p_pulsar.join()
+    p_web.start()
     p_web.join()
 
     #while True:
