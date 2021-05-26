@@ -62,10 +62,11 @@ class User(Resource):
                 new_data = {"category" : request_data["category"]}
                 encode_new_data = json.dumps(new_data, indent=2).encode('utf-8')
             #Send request to Book server
-                print(encode_new_data)
-                producer = client.create_producer('Popo.category_book')
+                print(new_data, encode_new_data)
+                client_ = pulsar.Client('pulsar://localhost:6650')
+                producer = client_.create_producer('Popo.category_book')
                 producer.send(encode_new_data)
-                client.close()
+                client_.close()
                 print("Sent message!")
 
             except:
