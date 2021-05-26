@@ -51,7 +51,7 @@ if __name__ == "__main__":
             ["3","Chí Phèo","Văn học"],
             ["4","Bình Ngô đại cáo","Lịch sử"]]
 
-    table2 = dynamodb.Table('Popo_books')
+    table2 = dynamodb.Table('Popo.books')
     for book in books:
         data = {"id": book[0], "name": book[1], "category": book[2]}
         table2.put_item(Item=data)
