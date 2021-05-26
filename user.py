@@ -18,37 +18,48 @@ start_time = time.time()
 books = {}
 
 def list_of_books(mission, data):
+    print("-----Starting search books:")
     print("Data: ", data)
     global books
     if mission == 1:
         books = data
     else:
         books = {}
-    print(books)
+    print("List of books:", books)
 
-def receive_message():
-    
-    print("Run consumer!")
+def convert_msg(msg):
+    print("-----Starting covert msg:")
+    json_data = json.loads(msg.data().decode('utf8'))
+    print("Convert message to json")
+    dict_data = json.loads(json.dumps(json_data))
+    print("Convert json to dictionary")
+    print("Done!")
+    return dict_data
 
+def send_message(encode_new_data):
+    print("-----Starting send message:")
+    client_ = pulsar.Client('pulsar://localhost:6650')
+    producer = client_.create_producer('Popo.category_book')
+    producer.send(encode_new_data)
+    client_.close()
+    print("Sent")
+
+def receive_message():    
+    print("---------------Run consumer!")
     while True:
         #if time.time() - start_time % 10 == 0:
-        print("Consumer runing")
-        # msg = consumer.receive()
-        # print("Received list of books")
-        # try:
-        #     consumer.acknowledge(msg)
-        #     try:
-        #         json_data = json.loads(msg.data().decode('utf8'))
-        #         print("Convert message to json")
-        #         dict_data = json.loads(json.dumps(json_data))
-        #         print("Convert json to dictionary")
-        #         print("Done!")
-        #         list_of_books(1, dict_data)
-        #     except:
-        #         print("Can't convert")
-        # except:
-        #     consumer.negative_acknowledge(msg)
-    print("Close")
+        print("Consumer is runing")
+        msg = consumer.receive()
+        print("Received list of books")
+        try:
+            consumer.acknowledge(msg)
+            try:
+                dict_data = convert_msg(msg)
+                list_of_books(1, dict_data)
+            except:
+                print("Can't convert")
+        except:
+            consumer.negative_acknowledge(msg)
     client.close()
 
 class User(Resource):
@@ -62,13 +73,7 @@ class User(Resource):
                 new_data = {"category" : request_data["category"]}
                 encode_new_data = json.dumps(new_data, indent=2).encode('utf-8')
             #Send request to Book server
-                print(new_data, encode_new_data)
-                client_ = pulsar.Client('pulsar://localhost:6650')
-                producer = client_.create_producer('Popo.category_book')
-                producer.send(encode_new_data)
-                client_.close()
-                print("Sent message!")
-
+                send_message(encode_new_data)
             except:
                 print("Can't send")
 
