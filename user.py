@@ -33,21 +33,21 @@ def receive_message():
     while True:
         #if time.time() - start_time % 10 == 0:
         print("Consumer runing")
-        msg = consumer.receive()
-        print("Received list of books")
-        try:
-            consumer.acknowledge(msg)
-            try:
-                json_data = json.loads(msg.data().decode('utf8'))
-                print("Convert message to json")
-                dict_data = json.loads(json.dumps(json_data))
-                print("Convert json to dictionary")
-                print("Done!")
-                list_of_books(1, dict_data)
-            except:
-                print("Can't convert")
-        except:
-            consumer.negative_acknowledge(msg)
+        # msg = consumer.receive()
+        # print("Received list of books")
+        # try:
+        #     consumer.acknowledge(msg)
+        #     try:
+        #         json_data = json.loads(msg.data().decode('utf8'))
+        #         print("Convert message to json")
+        #         dict_data = json.loads(json.dumps(json_data))
+        #         print("Convert json to dictionary")
+        #         print("Done!")
+        #         list_of_books(1, dict_data)
+        #     except:
+        #         print("Can't convert")
+        # except:
+        #     consumer.negative_acknowledge(msg)
     print("Close")
     client.close()
 
