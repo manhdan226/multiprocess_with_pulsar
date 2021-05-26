@@ -9,19 +9,19 @@ client = pulsar.Client('pulsar://localhost:6650')
 consumer = client.subscribe('Popo.category_book', 'my-subscription')
 
 def list_of_books(category):
-    print("-----Starting search books:")
+    #print("-----Starting search books:")
     books = []
     scanResponse = table.scan(TableName='Popo.books')
     items = scanResponse["Items"]
     for item in items:
-        print(item)
+        #print(item)
         if item["category"] == category:
             books.append(item["name"])
-    print(books)
+    #print(books)
     return books
 
 def convert_msg(msg):
-    print("-----Starting covert msg:")
+    print("-----2. Starting covert msg:")
     json_data = json.loads(msg.data().decode('utf8'))
     print("Convert message to json")
     dict_data = json.loads(json.dumps(json_data))
@@ -30,7 +30,7 @@ def convert_msg(msg):
     return dict_data
 
 def send_message(encode_new_data):
-    print("-----Starting send message:")
+    print("-----4. Starting send message:")
     client_ = pulsar.Client('pulsar://localhost:6650')
     producer = client_.create_producer('Popo.list_of_book')
     producer.send(encode_new_data)
@@ -38,18 +38,18 @@ def send_message(encode_new_data):
     print("Sent")
 
 def search_books(dict_data):
-    print("-----Starting search books:")
+    print("-----3. Starting search books:")
     category = dict_data["category"]
-    print(category)
+    print("You are looking for: ", category)
     books = list_of_books(category)
     new_data = {"books": books}
-    print(new_data)
+    print("Your list: ", new_data)
     encode_new_data = json.dumps(new_data, indent=2).encode('utf-8')
     return encode_new_data
 
 while True:
     msg = consumer.receive()
-    print("Received category books")
+    print("-----1. Received category books")
     try:        
         consumer.acknowledge(msg)
         try:

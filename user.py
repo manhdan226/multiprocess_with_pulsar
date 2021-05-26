@@ -37,7 +37,7 @@ def convert_msg(msg):
     return dict_data
 
 def send_message(encode_new_data):
-    print("-----Starting send message:")
+    print("-----2. Starting send message:")
     client_ = pulsar.Client('pulsar://localhost:6650')
     producer = client_.create_producer('Popo.category_book')
     producer.send(encode_new_data)
@@ -50,7 +50,7 @@ def receive_message():
         #if time.time() - start_time % 10 == 0:
         print("Consumer is runing")
         msg = consumer.receive()
-        print("Received list of books")
+        print("-----3. Received list of books")
         try:
             consumer.acknowledge(msg)
             try:
@@ -68,7 +68,7 @@ class User(Resource):
         #Receive and convert data
         try:
             request_data = request.get_json()
-            print("Received request!")
+            print("-----1. Received request!")
             try:
                 new_data = {"category" : request_data["category"]}
                 encode_new_data = json.dumps(new_data, indent=2).encode('utf-8')
@@ -86,8 +86,10 @@ class User(Resource):
                         break
                 print("Received list")
                 list_of_books(0, [])
+                return "Sucessful"
             except:
                 print("Can't receive")
+                return "Can't receive"
             #Clear list_of_book and return result
             
         except:
