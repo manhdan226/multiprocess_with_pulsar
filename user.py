@@ -108,12 +108,13 @@ if __name__ == '__main__':
     p_web = Process(target=run_web, args=())
     p_pulsar = Process(target=receive_message, args=())
 
+    p_pulsar.start()
     p_web.start()
+    p_pulsar.join()
     p_web.join()
 
     #while True:
-    p_pulsar.start()
-    p_pulsar.join()
+    
 
 
 
