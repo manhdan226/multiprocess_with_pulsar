@@ -9,12 +9,15 @@ client = pulsar.Client('pulsar://localhost:6650')
 consumer = client.subscribe('Popo.category_book', 'my-subscription')
 
 def list_of_books(category):
+    print("---Starting search books:")
     books = []
     scanResponse = table.scan(TableName='Popo.books')
     items = scanResponse["Items"]
     for item in items:
+        print(item)
         if item["category"] == category:
             books.append(item["name"])
+    print(books)
     return books
 
 while True:
