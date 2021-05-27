@@ -80,6 +80,7 @@ class User(Resource):
                 send_message(encode_new_data)
             except:
                 print("Can't send")
+                return "Can't send"
 
             #Check if User server receive list of book
             try:
@@ -108,10 +109,11 @@ if __name__ == '__main__':
     #with Manager() as manager:
     p_web = Process(target=run_web, args=())
     p_pulsar = Process(target=receive_message, args=())
-
-    p_pulsar.start()
-    p_pulsar.join()
+    
     p_web.start()
+    p_pulsar.start()
+    
+    p_pulsar.join()
     p_web.join()
 
     #while True:
